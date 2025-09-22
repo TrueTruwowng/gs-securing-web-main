@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body class="page admin-page">
+<nav class="top-nav">
+    <div class="brand">Spring Security Demo</div>
+    <ul>
+        <li><a th:href="@{/home}">Home</a></li>
+        <li><a th:href="@{/hello}">Hello</a></li>
+        <li><a th:href="@{/user}" sec:authorize="hasAnyRole('USER','ADMIN')">User Page</a></li>
+        <li class="active"><a th:href="@{/admin}">Admin</a></li>
+    </ul>
+    <div class="auth-info" sec:authorize="isAuthenticated()">
+        <span>User: <strong sec:authentication="name"></strong></span>
+        <span>Roles: <strong><span sec:authentication="principal.authorities"></span></strong></span>
+        <form th:action="@{/logout}" method="post" class="inline">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+<main class="content">
+    <h1>Admin Dashboard</h1>
+    <p class="lead">Welcome, <span sec:authentication="name"></span>! You have <code>ADMIN</code> privileges.</p>
+
+    <section class="panel">
+        <h2>Quick Actions</h2>
+        <ul class="action-list">
+            <li><button type="button" onclick="alert('User management coming soon')">Manage Users</button></li>
+            <li><button type="button" onclick="alert('System report coming soon')">View System Report</button></li>
+            <li><button type="button" onclick="alert('Settings coming soon')">Settings</button></li>
+        </ul>
+    </section>
+
+    <section class="panel emphasis" sec:authorize="hasRole('ADMIN')">
+        <h2>Security Notice</h2>
+        <p>This section is visible only to <strong>ADMIN</strong> role users.</p>
+        <p>You can extend this page to include administrative metrics, user management tables, audit logs, etc.</p>
+    </section>
+</main>
+<footer class="site-footer">
+    <p>&copy; <span th:text="${T(java.time.Year).now()}"></span> Demo App. Admin View.</p>
+</footer>
+</body>
+</html>

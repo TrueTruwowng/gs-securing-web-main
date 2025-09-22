@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>User Workspace</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body class="page user-page">
+<nav class="top-nav">
+    <div class="brand">Spring Security Demo</div>
+    <ul>
+        <li><a th:href="@{/home}">Home</a></li>
+        <li><a th:href="@{/hello}">Hello</a></li>
+        <li class="active"><a th:href="@{/user}">User Page</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin</a></li>
+    </ul>
+    <div class="auth-info" sec:authorize="isAuthenticated()">
+        <span>User: <strong sec:authentication="name"></strong></span>
+        <span>Roles: <strong><span sec:authentication="principal.authorities"></span></strong></span>
+        <form th:action="@{/logout}" method="post" class="inline">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</nav>
+<main class="content">
+    <h1>User Workspace</h1>
+    <p class="lead">Xin chào, <span sec:authentication="name"></span>! Đây là trang dành cho USER / ADMIN (giao diện khác với Admin Dashboard).</p>
+
+    <section class="panel">
+        <h2>Thông tin cá nhân</h2>
+        <p>Bạn có thể thêm khu vực hiển thị thông tin tài khoản ở đây.</p>
+    </section>
+
+    <section class="panel emphasis" sec:authorize="hasRole('ADMIN')">
+        <h2>Góc ADMIN hiển thị phụ</h2>
+        <p>Bạn là ADMIN nên vẫn thấy được khối bổ sung này trên trang user.</p>
+    </section>
+
+    <section class="panel alt" sec:authorize="hasRole('USER') and !hasRole('ADMIN')">
+        <h2>Gợi ý nâng cấp</h2>
+        <p>Bạn chỉ có quyền USER. Các tính năng mở rộng sẽ hiển thị nếu được cấp quyền ADMIN.</p>
+    </section>
+</main>
+<footer class="site-footer">
+    <p>&copy; <span th:text="${T(java.time.Year).now()}"></span> Demo App. User View.</p>
+</footer>
+</body>
+</html>

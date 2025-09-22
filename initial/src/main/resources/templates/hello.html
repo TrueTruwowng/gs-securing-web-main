@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Hello | Spring Security Demo</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body class="page hello-page">
+<nav class="top-nav">
+    <div class="brand">Spring Security Demo</div>
+    <ul>
+        <li><a th:href="@{/home}">Home</a></li>
+        <li class="active"><a th:href="@{/hello}">Hello</a></li>
+        <li sec:authorize="hasAnyRole('USER','ADMIN')"><a th:href="@{/user}">User Page</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin</a></li>
+        <!-- New register link only for guests -->
+        <li sec:authorize="!isAuthenticated()"><a th:href="@{/register}">Register</a></li>
+    </ul>
+    <div class="auth-info" sec:authorize="isAuthenticated()">
+        <span><strong sec:authentication="name"></strong></span>
+        <span><span sec:authentication="principal.authorities"></span></span>
+        <form th:action="@{/logout}" method="post" class="inline"><button type="submit">Logout</button></form>
+    </div>
+    <div class="auth-info" sec:authorize="!isAuthenticated()">
+        <a th:href="@{/login}" style="color:#fff;">Login</a>
+    </div>
+</nav>
+<main class="content">
+    <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">Guest</span>!</h1>
+    <p class="lead" sec:authorize="isAuthenticated()">Bạn đã đăng nhập. Dùng menu để truy cập các trang khác.</p>
+    <p class="lead" sec:authorize="!isAuthenticated()">Bạn chưa đăng nhập. Có thể <a th:href="@{/login}">đăng nhập</a> hoặc <a th:href="@{/register}">đăng ký tài khoản mới</a>.</p>
+
+    <section class="panel" sec:authorize="!isAuthenticated()">
+        <h2>Bắt đầu</h2>
+        <p>Tạo tài khoản mới để vào khu vực người dùng:</p>
+        <p><a class="btn-primary" style="display:inline-block;text-decoration:none;text-align:center;width:auto;padding:.6rem 1.2rem;" th:href="@{/register}">Đăng ký ngay</a></p>
+    </section>
+
+    <section class="panel" sec:authorize="isAuthenticated()">
+        <h2>Tùy chọn</h2>
+        <ul>
+            <li><a th:href="@{/user}">Trang User</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">Admin Dashboard</a></li>
+        </ul>
+    </section>
+</main>
+<footer class="site-footer">
+    <p>&copy; <span th:text="${T(java.time.Year).now()}"></span> Demo App.</p>
+</footer>
+</body>
+</html>

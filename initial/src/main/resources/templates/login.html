@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <title>Login | Spring Security Demo</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}" />
+  <meta charset="UTF-8" />
+</head>
+<body class="page login-page">
+<div class="login-wrapper">
+  <div style="text-align:right;margin-top:-0.5rem;margin-bottom:0.5rem;">
+    <a th:href="@{/home}" class="small" style="text-decoration:none;color:#6366f1;">← Về Home</a>
+  </div>
+  <h1>Đăng nhập</h1>
+
+  <!-- ERROR BLOCKS -->
+  <!-- Preferred custom error via ?err=code -->
+  <div th:if="${param.err != null}" class="alert error" th:switch="${param.err[0]}">
+    <div th:case="'locked'">Tài khoản đã bị khóa.</div>
+    <div th:case="'disabled'">Tài khoản chưa được kích hoạt.</div>
+    <div th:case="'expired'">Tài khoản đã hết hạn.</div>
+    <div th:case="'credexpired'">Mật khẩu đã hết hạn, vui lòng đổi mật khẩu.</div>
+    <div th:case="*">Sai tài khoản hoặc mật khẩu.</div>
+  </div>
+  <!-- Fallback for default Spring Security ?error param (no granular code) -->
+  <div th:if="${param.err == null and param.error != null}" class="alert error">Sai tài khoản hoặc mật khẩu.</div>
+
+  <div th:if="${param.logout}" class="alert logout">Bạn đã đăng xuất.</div>
+
+  <form th:action="@{/login}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input id="username" type="text" name="username" required autofocus th:value="${param.username != null ? param.username[0] : ''}" />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" required />
+    </div>
+    <button type="submit" class="btn-primary">Đăng nhập</button>
+  </form>
+  <p class="small" style="margin-top:1rem;">Nếu không đăng nhập được hệ thống báo chung "Sai tài khoản hoặc mật khẩu" (ẩn chi tiết) trừ khi tài khoản bị khóa / vô hiệu hóa / hết hạn.</p>
+  <p class="small" style="margin-top:.5rem;">Chưa có tài khoản? <a th:href="@{/register}">Đăng ký ngay</a></p>
+</div>
+</body>
+</html>
